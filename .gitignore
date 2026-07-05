@@ -1,0 +1,16 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+
+# Local app state and logs
+*.log
+*.pid
+
+# Signing and packaged app outputs
+*.app
+*.dSYM/
+*.xcarchive/
