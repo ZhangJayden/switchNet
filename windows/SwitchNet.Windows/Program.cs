@@ -636,12 +636,14 @@ internal sealed class NetworkManager
         }
 
         var mask = uint.MaxValue << (32 - prefixLength);
-        return string.Join(".", [
-            (mask >> 24) & 255,
-            (mask >> 16) & 255,
-            (mask >> 8) & 255,
-            mask & 255
-        ]);
+        var octets = new[]
+        {
+            ((mask >> 24) & 255).ToString(),
+            ((mask >> 16) & 255).ToString(),
+            ((mask >> 8) & 255).ToString(),
+            (mask & 255).ToString()
+        };
+        return string.Join(".", octets);
     }
 }
 
