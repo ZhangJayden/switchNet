@@ -397,17 +397,18 @@ internal sealed class NetworkManager
     {
         var interfaceName = DetectWirelessInterface();
         var ssid = DetectSSID();
-        var json = RunPowerShell($"""
-            $config = Get-NetIPConfiguration -InterfaceAlias '{EscapePowerShell(interfaceName)}' -ErrorAction Stop
-            $dns = Get-DnsClientServerAddress -InterfaceAlias '{EscapePowerShell(interfaceName)}' -AddressFamily IPv4 -ErrorAction SilentlyContinue
-            [PSCustomObject]@{{
-              InterfaceName = $config.InterfaceAlias
-              IPAddress = @($config.IPv4Address)[0].IPAddress
-              PrefixLength = @($config.IPv4Address)[0].PrefixLength
-              Gateway = @($config.IPv4DefaultGateway)[0].NextHop
-              DnsServers = @($dns.ServerAddresses)
-            }} | ConvertTo-Json -Depth 4
-            """);
+        var escapedInterfaceName = EscapePowerShell(interfaceName);
+        var json = RunPowerShell(string.Join(Environment.NewLine, [
+            $"$config = Get-NetIPConfiguration -InterfaceAlias '{escapedInterfaceName}' -ErrorAction Stop",
+            $"$dns = Get-DnsClientServerAddress -InterfaceAlias '{escapedInterfaceName}' -AddressFamily IPv4 -ErrorAction SilentlyContinue",
+            "[PSCustomObject]@{",
+            "  InterfaceName = $config.InterfaceAlias",
+            "  IPAddress = @($config.IPv4Address)[0].IPAddress",
+            "  PrefixLength = @($config.IPv4Address)[0].PrefixLength",
+            "  Gateway = @($config.IPv4DefaultGateway)[0].NextHop",
+            "  DnsServers = @($dns.ServerAddresses)",
+            "} | ConvertTo-Json -Depth 4"
+        ]));
 
         using var document = JsonDocument.Parse(json);
         var root = document.RootElement;
