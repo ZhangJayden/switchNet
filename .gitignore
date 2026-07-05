@@ -14,3 +14,9 @@ DerivedData/
 *.app
 *.dSYM/
 *.xcarchive/
+
+# .NET / Windows
+bin/
+obj/
+*.user
+*.suo
